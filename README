@@ -4,7 +4,7 @@ Scenario test framework for EvoLogics S2C acoustic modems.
 
  Usage: evo-s2c-tests [flags] [--] <test-names> <IP[:port]>...
  
- -p  - period of sending IMS (default -1 sec
+ -p  - period of sending IMS/%SYNC (default: 'pcsync': 300 sec,'sync': 300 sec,'ims': 3 sec)
  -d  - test duration time (default 600 sec). Possible add suffix 'm' and 'h' for minutes and hours
  -l  - number of tests running in loop
  -y  - answer 'yes' to all questions
