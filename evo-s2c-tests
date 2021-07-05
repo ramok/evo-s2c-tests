@@ -10,7 +10,7 @@ array set ::opt {
     source-level    3
     evins-ver-min   0.8
     send-period     -1
-    test-duration   600
+    test-duration   3600
     loop-mode       0
     loglevel        {err warn note info norm detail todo pass stage ask}
     log-dir         log
