@@ -11,7 +11,7 @@ array set ::opt {
     evins-ver-min   0.8
     send-period     -1
     test-duration   3600
-    loop-mode       0
+    loop-mode       1
     loglevel        {err warn note info norm detail todo pass stage ask}
     log-dir         log
     not-interactive 0
@@ -818,7 +818,7 @@ proc usage {{err {}}} {
     -p  - period of sending IMS/%SYNC (default:\
         [join [lmap k [array name ::test_period] {set k "'$k': [sec2human $::test_period($k)]"}] {, }])\n\
     -d  - test duration time (default: [sec2human $::opt(test-duration)]). Possible add suffix 'm' and 'h' for minutes and hours\n\
-    -l  - number of tests running in loop\n\
+    -l  - number of tests running in loop. Default tests will be repeated for each modem as master (-l 1).\n\
     -y  - answer 'yes' to all questions\n\
     \n\
     -h  - this help\n\
@@ -837,12 +837,12 @@ proc usage {{err {}}} {
     send_user "Usage examples:\n\
     \n\
     # Run all test with modems 192.168.0.171:9200 and 192.168.0.162:9200 \n\
-    # Modem 192.168.0.171:9200 will act as main modem.\n\
+    # Tests will be repeat 1 time for each modem as master, 2 times in total.\n\
     $ ./$::opt(progname) all 171 162\n\
     \n\
     # Run all test with modems 192.168.0.171:9200 and 192.168.0.162:9200 \n\
     # Tests will be repeat 1 time for each modem as master, 2 times in total.\n\
-    $ ./$::opt(progname) -l 1 all 171 162\n\
+    $ ./$::opt(progname) all 171 162\n\
     \n\
     # Run tests 'ims' and 'sync' with modems 192.168.0.171:9200 and 192.168.0.162:9200 \n\
     # Tests will be repeat 2 time for each modem as master, 4 times in total.\n\
@@ -851,7 +851,7 @@ proc usage {{err {}}} {
     \n\
     # Run tests 'ims' for 30 min with master modems 192.168.0.171:9200 and remote 192.168.0.162:9200 \n\
     # All interactive menu will be skipped.\n\
-    $ ./$::opt(progname) -y ims -d 30m 171 162\n\
+    $ ./$::opt(progname) -y -d 30m -l 0 ims 171 162\n\
     \n"
 
     if {$err != {}} {

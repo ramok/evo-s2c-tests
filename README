@@ -1,12 +1,11 @@
 ```
-$ ./evo-s2c-tests
 Scenario test framework for EvoLogics S2C acoustic modems.
 
  Usage: evo-s2c-tests [flags] [--] <test-names> <IP[:port]>...
 
  -p  - period of sending IMS/%SYNC (default: 'pcsync': 300 sec (5 min), 'sync': 300 sec (5 min), 'ims': 3 sec)
  -d  - test duration time (default: 3600 sec (1 hour)). Possible add suffix 'm' and 'h' for minutes and hours
- -l  - number of tests running in loop
+ -l  - number of tests running in loop. Default tests will be repeated for each modem as master (-l 1).
  -y  - answer 'yes' to all questions
 
  -h  - this help
@@ -32,12 +31,12 @@ Test 'ims' descrition:
 Usage examples:
 
  # Run all test with modems 192.168.0.171:9200 and 192.168.0.162:9200
- # Modem 192.168.0.171:9200 will act as main modem.
+ # Tests will be repeat 1 time for each modem as master, 2 times in total.
  $ ./evo-s2c-tests all 171 162
 
  # Run all test with modems 192.168.0.171:9200 and 192.168.0.162:9200
  # Tests will be repeat 1 time for each modem as master, 2 times in total.
- $ ./evo-s2c-tests -l 1 all 171 162
+ $ ./evo-s2c-tests all 171 162
 
  # Run tests 'ims' and 'sync' with modems 192.168.0.171:9200 and 192.168.0.162:9200
  # Tests will be repeat 2 time for each modem as master, 4 times in total.
@@ -46,6 +45,6 @@ Usage examples:
 
  # Run tests 'ims' for 30 min with master modems 192.168.0.171:9200 and remote 192.168.0.162:9200
  # All interactive menu will be skipped.
- $ ./evo-s2c-tests -y ims -d 30m 171 162
+ $ ./evo-s2c-tests -y -d 30m -l 0 ims 171 162
 
 ```
