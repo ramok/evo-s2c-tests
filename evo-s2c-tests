@@ -387,8 +387,10 @@ proc ::am::check_modems {} {
     set ::opt(loglevel) $ll
 
     foreach sid $::sids {
-        msg info "$sid2ip($sid): fw: $::ver_fw($sid)\n"
-        msg info "$sid2ip($sid): evins: $::ver_evins($sid)\n"
+        msg note "$sid2ip($sid): fw: $::ver_fw($sid)\n"
+        foreach s [lmap {p1 p2 p3 p4 p5} [split $::ver_evins($sid) ,] {join [list $p1 $p2 $p3 $p4 $p5]}] {
+            msg note "$sid2ip($sid): evins: $s\n"
+        }
         regexp {evins_proprietary:(0\.[\d+])} $::ver_evins($sid) -> ver
         if {![info exist ver] || \
             ![string is double $ver] || \
@@ -442,7 +444,7 @@ proc ::log::log {ip msg {quiet 0}} {
         return
     }
     if {!$quiet} {
-        msg norm "$msg"
+        msg norm "$ip: $msg"
     }
     set fname $::log::dir/$ip.log
     set fd [open $fname a]
@@ -815,8 +817,8 @@ proc usage {{err {}}} {
     Usage: $::opt(progname) \[flags] \[--] <test-names> <IP\[:port]>...\n\
     \n\
     -p  - period of sending IMS/%SYNC (default:\
-        [join [lmap k [array name ::test_period] {set k "'$k': [sec2human $::test_period($k)]"}] ,])\n\
-    -d  - test duration time (default $::opt(test-duration) sec). Possible add suffix 'm' and 'h' for minutes and hours\n\
+        [join [lmap k [array name ::test_period] {set k "'$k': [sec2human $::test_period($k)]"}] {, }])\n\
+    -d  - test duration time (default: [sec2human $::opt(test-duration)]). Possible add suffix 'm' and 'h' for minutes and hours\n\
     -l  - number of tests running in loop\n\
     -y  - answer 'yes' to all questions\n\
     \n\
@@ -930,7 +932,9 @@ msg info "Will be perform test with nodes:\n"
 foreach ip $::ips {
     msg info $ip:$port($ip)\n
 }
-msg note "NOTE: Every test will repeat for each node becoming master\n"
+if {$::opt(loop-mode)} {
+    msg note "NOTE: Every test will repeat for each node becoming master\n"
+}
 set sep "+--------+-----------+----------+----------+\n"
 msg info $sep
 msg info "|  Test  |  Duration |  Period  |  Repeat  |\n"
