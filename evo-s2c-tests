@@ -604,11 +604,7 @@ proc ::test_helper::pc_sync {} {
 
 proc ::test_helper::pc_check_sync {} {
     uplevel 1 {
-        set ::opt(pcsync-init-cmds) {
-            { {AT@ZX0}                   }
-            { {ATS}    {INITIATION DEAF} }
-        }
-        ::am::send_all [list $::snd_sid] $::opt(pcsync-init-cmds)
+        ::am::send_all [list $::snd_sid] { {AT@ZX0} }
 
         set rate 19200
         set rate 10000000
@@ -653,6 +649,7 @@ proc ::test_helper::pc_check_sync {} {
         set off [expr $t1 + $delta + $md1 - $t_m]
 
         ::log::log $::sid2ip($::snd_sid) "delta: $delta, offset: $off, T1: $t1, Tm: $t_m, To: $t_o, MD: $md, L: $l)\n"
+        ::am::send_all [list $::snd_sid] { {AT@ZX1} }
     }
 }
 
