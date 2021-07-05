@@ -742,7 +742,7 @@ proc ::test::sync::run {duration period ips} {
         foreach sid $::rcv_sids {
             ::test_helper::time_sync
 
-            if {[expr [clock seconds] - $ts_start] >= $duration} {
+            if {[expr [clock seconds] - $ts_start + $period - 3] >= $duration} {
                 set done 1
                 break
             }
@@ -769,7 +769,8 @@ proc ::test::pcsync::run {duration period ips} {
     ::test_helper::begin
 
     set period 60
-    while 1 {
+    set done 0
+    while {!$done} {
         # 1. sync.sh  PC with modem
         ::log::log $::sid2ip($::snd_sid) "Test '$test'\[1]: sync $::sid2ip($::snd_sid) physical clock with PC clock\n"
         ::test_helper::pc_sync
@@ -790,6 +791,11 @@ proc ::test::pcsync::run {duration period ips} {
                 ::test_helper::pc_check_sync
             }
 
+            if {[expr [clock seconds] - $ts_start + $period] >= $duration} {
+                set done 1
+                break
+            }
+
             # 4. sleep 1m
             if {$i < [expr $check_cnt - 1]} {
                 ::test_helper::show_eta
@@ -797,10 +803,6 @@ proc ::test::pcsync::run {duration period ips} {
             }
 
             # 5. goto 3 for 5 times
-
-            if {[expr [clock seconds] - $ts_start] >= $duration} {
-                break
-            }
         }
     }
 
