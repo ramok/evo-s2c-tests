@@ -848,6 +848,10 @@ proc usage {{err {}}} {
     # Tests will be repeat 2 time for each modem as master, 4 times in total.\n\
     # All interactive menu will be skipped.\n\
     $ ./$::opt(progname) -y -l 2 ims,sync 171 162\n\
+    \n\
+    # Run tests 'ims' for 30 min with master modems 192.168.0.171:9200 and remote 192.168.0.162:9200 \n\
+    # All interactive menu will be skipped.\n\
+    $ ./$::opt(progname) -y ims -d 30m 171 162\n\
     \n"
 
     if {$err != {}} {
