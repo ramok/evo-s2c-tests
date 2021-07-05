@@ -735,11 +735,13 @@ proc ::test::sync::run {duration period ips} {
     set test sync
     ::test_helper::begin
 
-    while 1 {
+    set done 0
+    while {!$done} {
         foreach sid $::rcv_sids {
             ::test_helper::time_sync
 
             if {[expr [clock seconds] - $ts_start] >= $duration} {
+                set done 1
                 break
             }
 
@@ -812,7 +814,8 @@ proc usage {{err {}}} {
     send_user "Scenario test framework for EvoLogics S2C acoustic modems.\n\n\
     Usage: $::opt(progname) \[flags] \[--] <test-names> <IP\[:port]>...\n\
     \n\
-    -p  - period of sending IMS/%SYNC (default: [join [lmap k [array name ::test_period] {set k "'$k': $::test_period($k) sec"}] ,])\n\
+    -p  - period of sending IMS/%SYNC (default:\
+        [join [lmap k [array name ::test_period] {set k "'$k': [sec2human $::test_period($k)]"}] ,])\n\
     -d  - test duration time (default $::opt(test-duration) sec). Possible add suffix 'm' and 'h' for minutes and hours\n\
     -l  - number of tests running in loop\n\
     -y  - answer 'yes' to all questions\n\
