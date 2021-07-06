@@ -542,13 +542,13 @@ proc ::test_helper::time_sync {} {
         ::am::send_sync $::snd_sid $::sid2laddr($sid)
 
         set try_again 3
-        set done 0
+        set time_sync_done 0
         set timeout 10
         expect -i $::snd_sid -re {(%SYNC,\d+,[-\d]+,.*?)\r\n} {
             ::log::log $::sid2ip($expect_out(spawn_id)) "$expect_out(1,string)\n"
             # need to collect logs in remote nodes
             set timeout 3 
-            set done 1
+            set time_sync_done 1
             exp_continue
         } -re {(%SYNC,\d+,(failed|busy))\r\n} {
             ::log::log $::sid2ip($expect_out(spawn_id)) "$expect_out(1,string)\n"
@@ -558,8 +558,8 @@ proc ::test_helper::time_sync {} {
             ::log::log $::sid2ip($expect_out(spawn_id)) "$expect_out(1,string)\n"
             exp_continue
         } timeout {
-            msg note "Timeout. done: $done, timeout $timeout\n"
-            if {!$done} {
+            msg note "Timeout. done: $time_sync_done, timeout $timeout\n"
+            if {!$time_sync_done} {
                 ::test_helper::time_sync_reset_resend
             }
         } eof {        msg warn "$::sid2ip($expect_out(spawn_id)) EOF\n"
@@ -734,13 +734,13 @@ proc ::test::sync::run {duration period ips} {
     set test sync
     ::test_helper::begin
 
-    set done 0
-    while {!$done} {
+    set sync_done 0
+    while {!$sync_done} {
         foreach sid $::rcv_sids {
             ::test_helper::time_sync
 
             if {[expr [clock seconds] - $ts_start + $period - 3] >= $duration} {
-                set done 1
+                set sync_done 1
                 break
             }
 
@@ -766,8 +766,8 @@ proc ::test::pcsync::run {duration period ips} {
     ::test_helper::begin
 
     set period 60
-    set done 0
-    while {!$done} {
+    set pcsync_done 0
+    while {!$pcsync_done} {
         # 1. sync.sh  PC with modem
         ::log::log $::sid2ip($::snd_sid) "Test '$test'\[1]: sync $::sid2ip($::snd_sid) physical clock with PC clock\n"
         ::test_helper::pc_sync
@@ -789,7 +789,7 @@ proc ::test::pcsync::run {duration period ips} {
             }
 
             if {[expr [clock seconds] - $ts_start + $period] >= $duration} {
-                set done 1
+                set pcsync_done 1
                 break
             }
 
