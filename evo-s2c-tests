@@ -815,6 +815,7 @@ proc usage {{err {}}} {
     send_user "Scenario test framework for EvoLogics S2C acoustic modems.\n\n\
     Usage: $::opt(progname) \[flags] \[--] <test-names> <IP\[:port]>...\n\
     \n\
+    -s  - source level (from 0 to 3)\n\
     -p  - period of sending IMS/%SYNC (default:\
         [join [lmap k [array name ::test_period] {set k "'$k': [sec2human $::test_period($k)]"}] {, }])\n\
     -d  - test duration time (default: [sec2human $::opt(test-duration)]). Possible add suffix 'm' and 'h' for minutes and hours\n\
