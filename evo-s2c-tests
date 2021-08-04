@@ -307,9 +307,12 @@ proc ::am::send_sync {sid addr} {
 }
 
 proc ::am::reset_all {sids} {
+    flush_all $::sids
     foreach sid $sids {
         catch {::am::send $sid "ATZ4\n"}
+        expect -i $sid -timeout 1 -re .+ exp_continue timeout
         catch {::am::send $sid "AT%RESET\n"}
+        expect -i $sid -timeout 1 -re .+ exp_continue timeout
     }
 }
 
