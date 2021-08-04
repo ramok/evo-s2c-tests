@@ -512,6 +512,7 @@ proc ::test_helper::begin {} {
 }
 
 proc ::test_helper::finish {} {
+    msg stage "test done"
     uplevel 1 {
         ::am::reset_all $::sids
         foreach sid $::sids {
@@ -676,7 +677,9 @@ proc ::test::ims::run {duration period ips} {
     set timeout -1 
     expect -i $::snd_sid -re {(SENDEND,\d+,ims,(\d+),.*?)\r\n} {
         if {[expr [clock seconds] - $ts_start] > $duration} {
-            msg stage "test stop"
+            set timeout $period
+            msg note "Test will end in $period seconds\n"
+            exp_continue
         } else {
             set ts {}
             if {[info exist expect_out(2,string)]} {
@@ -692,7 +695,9 @@ proc ::test::ims::run {duration period ips} {
         }
     } -re {(EXPIREDIMS.*?)\r\n} {
         if {[expr [clock seconds] - $ts_start] > $duration} {
-            msg stage "test stop"
+            set timeout $period
+            msg note "Test will end in $period seconds\n"
+            exp_continue
         } else {
             incr payload
             ::log::log $::sid2ip($expect_out(spawn_id)) "$expect_out(1,string)\n"
@@ -701,7 +706,9 @@ proc ::test::ims::run {duration period ips} {
         }
     } -re {(CANCELEDIM.*?)\r\n} {
         if {[expr [clock seconds] - $ts_start] > $duration} {
-            msg stage "test stop"
+            set timeout $period
+            msg note "Test will end in $period seconds\n"
+            exp_continue
         } else {
             incr payload
             ::log::log $::sid2ip($expect_out(spawn_id)) "$expect_out(1,string)\n"
@@ -717,7 +724,8 @@ proc ::test::ims::run {duration period ips} {
     } -i ::rcv_sids -re {^([^\r\n]*)\r\n} {
         ::log::log $::sid2ip($expect_out(spawn_id)) "$expect_out(1,string)\n"
         exp_continue
-    } timeout {     exp_continue
+    } timeout {
+        # test done
     } full_buffer { exp_continue
     } eof {         msg warn "$::sid2ip($expect_out(spawn_id)) EOF\n"
     }
@@ -751,7 +759,6 @@ proc ::test::sync::run {duration period ips} {
         }
     }
 
-    msg stage "test stop"
     ::test_helper::finish
 }
 
@@ -804,7 +811,6 @@ proc ::test::pcsync::run {duration period ips} {
     }
 
 
-    msg stage "test stop"
     ::test_helper::finish
 }
 
