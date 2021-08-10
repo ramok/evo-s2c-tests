@@ -794,6 +794,7 @@ proc ::test::pcsync::run {duration period ips} {
             ::log::log $::sid2ip($::snd_sid) \
                 "Test '$test'\[3]: check $::sid2ip($::snd_sid) physical clock syncing with PC \[[expr $i + 1]/$check_cnt]\n"
 
+            flush_all [list $::snd_sid $::rcv_sids]
             foreach sid $::rcv_sids {
                 ::test_helper::pc_check_sync
             }
