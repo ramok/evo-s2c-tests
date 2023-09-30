@@ -6,6 +6,10 @@
 # the next line restarts using expect \
     LC_TYPE=C exec expect -f "$0" -- "$@"
 
+#FIXME: set ::opt(no-evins) 1
+#check-cmds {
+#{ {AT%VERSION} {OK\r\n%VERSION,(.+?)} ::ver_evins }
+#}
 array set ::opt {
     source-level    3
     evins-ver-min   0.8
@@ -18,7 +22,6 @@ array set ::opt {
 
     check-cmds {
         { {ATI1}       {(phy: .+?)}           ::ver_fw    }
-        { {AT%VERSION} {OK\r\n%VERSION,(.+?)} ::ver_evins }
     }
 
     init-cmds {
